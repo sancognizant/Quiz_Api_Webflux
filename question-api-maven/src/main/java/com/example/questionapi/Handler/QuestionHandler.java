@@ -1,6 +1,7 @@
 package com.example.questionapi.Handler;
 
 import com.example.questionapi.Repository.QuestionRepository;
+import com.example.questionapi.Service.QuestionService;
 import com.example.questionapi.model.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,10 +19,20 @@ public class QuestionHandler {
     @Autowired
     QuestionRepository questionRepository;
 
+    @Autowired
+    QuestionService questionService;
+
     // get all questions from h2 database
     public Mono<ServerResponse> getALLQuestions(ServerRequest serverRequest){
         Flux<Question> questions = questionRepository.findAll();
         return ok().contentType(MediaType.APPLICATION_JSON).body(questions, Question.class);
+    }
+
+    // create a question in database
+    public Mono<ServerResponse> createQuestion(ServerRequest request) {
+        Mono<Question> questionMono = request.bodyToMono(Question.class);
+
+        return ok().contentType(MediaType.APPLICATION_JSON).body(questionService.saveQuestion(questionMono), Question.class);
     }
 
 

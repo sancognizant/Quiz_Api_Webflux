@@ -7,8 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
+import static org.springframework.web.reactive.function.server.RequestPredicates.*;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 @Configuration
@@ -17,6 +16,9 @@ public class QuestionRouter {
     @Bean
     public RouterFunction<ServerResponse> routeSample(QuestionHandler handler) {
         return
-                route(GET("/questions").and(accept(MediaType.APPLICATION_JSON)), handler::getALLQuestions);
+                route().
+                        GET("/questions", accept(MediaType.APPLICATION_JSON), handler::getALLQuestions)
+                .POST("/question", handler::createQuestion)
+                .build();
     }
 }
